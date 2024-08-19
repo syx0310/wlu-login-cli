@@ -1,3 +1,5 @@
+version: 2
+
 builds:
   - env:
       - CGO_ENABLED=0
@@ -10,16 +12,12 @@ builds:
       - "386"
       - arm
 archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
@@ -41,37 +39,12 @@ release:
 
 
 nfpms:
-  -
-    # ID of the nfpm config, must be unique.
-    # Defaults to "default".
-    id: packages
-
-    # Replacements for GOOS and GOARCH in the package name.
-    # Keys should be valid GOOSs or GOARCHs.
-    # Values are the respective replacements.
-    # Default is empty.
-    replacements:
-      amd64: 64-bit
-      386: 32-bit
-      darwin: macOS
-      linux: Tux
-
-    # Your app's vendor.
-    # Default is empty.
-    vendor: syx0310
-
-    # Template to your app's homepage.
-    # Default is empty.
-    homepage: https://github.com/syx0310/wlu-login-cli
-
-    # Your app's maintainer (probably you).
-    # Default is empty.
-    maintainer: syx0310
-    # Your app's license.
-    # Default is empty.
-    license: Apache 2.0
-
-    # Formats to be generated.
+  - id: packages
+    package_name: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     formats:
       - deb
       - rpm
+    vendor: syx0310
+    homepage: https://github.com/syx0310/wlu-login-cli
+    maintainer: syx0310
+    license: Apache 2.0
