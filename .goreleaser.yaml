@@ -31,7 +31,7 @@ release:
   header: |
     ## Hi! 欢迎使用wlu-login-cli ({{ .Date }})
 
-    此处是版本介绍
+    first release
 
   footer: |
     ## 感谢您的支持!
