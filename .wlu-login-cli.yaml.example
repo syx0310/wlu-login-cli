@@ -1,0 +1,16 @@
+net:
+    # westlake university Wi-Fi/Wired network login
+    #
+    # Manually method
+    # username always is your student id like 20051101
+    # password is what u know
+    # and put the file at your home directory
+    #
+    # Auto method
+    # hdu-cli net login --username 20051101 --password your-password
+    # After Testing on my Kali linux The ( -s / -d ) option seems not work correctly.
+    # There need further debugging.
+    acid: "1" # Maybe 1 for wireless, 6 for wired
+    auth:
+        username: 20051101
+        password: your-password

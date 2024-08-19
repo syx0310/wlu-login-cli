@@ -5,3 +5,6 @@ hdu-cli
 .idea
 /vendor
 dist/
+
+.wlu-login-cli.yaml
+wlu-login-cli

@@ -1,4 +1,4 @@
-module github.com/hduhelp/hdu-cli
+module github.com/syx0310/wlu-login-cli
 
 go 1.18
 

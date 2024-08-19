@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/hduhelp/hdu-cli/cmd"
+	"github.com/syx0310/wlu-login-cli/cmd"
 )
 
 func main() {

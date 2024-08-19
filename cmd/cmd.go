@@ -4,17 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hduhelp/hdu-cli/cmd/auth"
-	"github.com/hduhelp/hdu-cli/cmd/net"
-	"github.com/hduhelp/hdu-cli/cmd/rpc"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/syx0310/wlu-login-cli/cmd/net"
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "hdu_cli",
-	Short:   "hdu cli",
+	Use:     "wlu-login-cli",
+	Short:   "Westlake University net login cli",
 	Version: "alpha",
 	PersistentPostRun: func(cmd *cobra.Command, args []string) {
 		if viper.GetBool("save") {
@@ -36,13 +34,13 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.hdu-cli.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.wlu-login-cli.yaml)")
 	rootCmd.PersistentFlags().BoolP("save", "s", false, "save config")
 	cobra.CheckErr(viper.BindPFlag("save", rootCmd.PersistentFlags().Lookup("save")))
 	rootCmd.PersistentFlags().BoolP("verbose", "V", false, "show more info")
 	cobra.CheckErr(viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose")))
 
-	rootCmd.AddCommand(net.Cmd, auth.Cmd, rpc.Cmd)
+	rootCmd.AddCommand(net.Cmd)
 }
 
 var cfgFile string
@@ -60,7 +58,7 @@ func initConfig() {
 		// Search config in home directory with name ".hdu_cli" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".hdu-cli")
+		viper.SetConfigName(".wlu-login-cli")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match

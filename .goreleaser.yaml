@@ -29,7 +29,7 @@ changelog:
 
 release:
   header: |
-    ## Hi! 欢迎使用HDU-CLI ({{ .Date }})
+    ## Hi! 欢迎使用wlu-login-cli ({{ .Date }})
 
     此处是版本介绍
 
@@ -58,15 +58,15 @@ nfpms:
 
     # Your app's vendor.
     # Default is empty.
-    vendor: HDUHELP
+    vendor: syx0310
 
     # Template to your app's homepage.
     # Default is empty.
-    homepage: https://github.com/hduhelp/hdu-cli
+    homepage: https://github.com/syx0310/wlu-login-cli
 
     # Your app's maintainer (probably you).
     # Default is empty.
-    maintainer: HDUHELP
+    maintainer: syx0310
     # Your app's license.
     # Default is empty.
     license: Apache 2.0
@@ -75,12 +75,3 @@ nfpms:
     formats:
       - deb
       - rpm
-
-publishers:
-  - name: fury.io
-    # by specifying `packages` id here goreleaser will only use this publisher
-    # with artifacts identified by this id{{ .Env.FURY_TOKEN }}
-    ids:
-      - packages
-    dir: "{{ dir .ArtifactPath }}"
-    cmd: curl -F package=@{{ .ArtifactName }} https://{{ .Env.FURY_TOKEN }}@push.fury.io/{{ .Env.FURY_USER_NAME }}/

@@ -2,14 +2,15 @@ package net
 
 import (
 	"fmt"
-	"github.com/hduhelp/hdu-cli/pkg/srun"
-	"github.com/hduhelp/hdu-cli/pkg/table"
-	"github.com/parnurzeal/gorequest"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
 	"net/url"
 	"time"
+
+	"github.com/parnurzeal/gorequest"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/syx0310/wlu-login-cli/pkg/srun"
+	"github.com/syx0310/wlu-login-cli/pkg/table"
 )
 
 // Cmd represents the srun command
@@ -27,17 +28,17 @@ var portalServer *srun.PortalServer
 
 func init() {
 	Cmd.PersistentFlags().StringP("endpoint", "e", "", "endpoint host of srun")
-	viper.SetDefault("net.endpoint", "http://192.168.112.30")
+	viper.SetDefault("net.endpoint", "http://10.1.10.1")
 	cobra.CheckErr(viper.BindPFlag("net.endpoint", Cmd.PersistentFlags().Lookup("endpoint")))
 
 	Cmd.PersistentFlags().StringP("acid", "a", "", "ac_id of srun")
 	resp, _, errs := gorequest.New().Get("http://www.baidu.com").End()
 	if errs != nil {
-		viper.SetDefault("net.acid", "0")
+		viper.SetDefault("net.acid", "1")
 	} else if acid := resp.Request.URL.Query().Get("ac_id"); acid != "" {
 		viper.SetDefault("net.acid", acid)
 	} else {
-		viper.SetDefault("net.acid", "0")
+		viper.SetDefault("net.acid", "1")
 	}
 	cobra.CheckErr(viper.BindPFlag("net.acid", Cmd.PersistentFlags().Lookup("acid")))
 
@@ -54,7 +55,7 @@ func init() {
 // infoCmd represents the info command
 var infoCmd = &cobra.Command{
 	Use:   "info",
-	Short: "show info of your i-hdu network",
+	Short: "show info of your Westlake University network",
 	Run: func(cmd *cobra.Command, args []string) {
 		info, err := portalServer.GetUserInfo()
 		table.PrintStruct(info, "chinese")
@@ -65,7 +66,7 @@ var infoCmd = &cobra.Command{
 // loginCmd represents the login command
 var loginCmd = &cobra.Command{
 	Use:   "login",
-	Short: "login i-hdu of the account",
+	Short: "login Westlake University of the account",
 	Run: func(cmd *cobra.Command, args []string) {
 		cobra.CheckErr(viper.BindPFlag("net.auth.username", cmd.Flags().Lookup("username")))
 		cobra.CheckErr(viper.BindPFlag("net.auth.password", cmd.Flags().Lookup("password")))
@@ -118,14 +119,13 @@ var loginCmd = &cobra.Command{
 				}
 			}
 		}
-
 	},
 }
 
 // logoutCmd represents the logout command
 var logoutCmd = &cobra.Command{
 	Use:   "logout",
-	Short: "logout i-hdu of the account",
+	Short: "logout the account",
 	Run: func(cmd *cobra.Command, args []string) {
 		info, err := portalServer.GetUserInfo()
 		cobra.CheckErr(err)
