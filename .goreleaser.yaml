@@ -5,8 +5,8 @@ builds:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
-      - darwin
+      # - windows # disabled because of some linux specific code
+      # - darwin
     goarch:
       - amd64
       - "386"
@@ -40,7 +40,7 @@ release:
   header: |
     ## Hi! 欢迎使用wlu-login-cli ({{ .Date }})
 
-    first release
+    The release only supports Linux.
 
   footer: |
     ## 感谢您的支持!

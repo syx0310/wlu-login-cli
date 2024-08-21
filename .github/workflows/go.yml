@@ -2,10 +2,10 @@ name: Go Build
 on:
   push:
     branches:
-      - main
+      - linux
   pull_request:
     branches:
-      - main
+      - linux
 jobs:
   build:
     name: Go Test And Build

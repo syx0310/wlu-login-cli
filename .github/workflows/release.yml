@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - linux
 #  workflow_dispatch:
 #    inputs:
 #      build:

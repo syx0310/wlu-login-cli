@@ -1,10 +1,12 @@
 package srun
 
 import (
+	"context"
 	"io"
 	"log"
 	"net"
 	"net/http"
+	"syscall"
 	"time"
 )
 
@@ -12,46 +14,30 @@ func CustomIfaceGetRequest(url string, ifaceName string) (*http.Response, string
 	var client *http.Client
 
 	if ifaceName != "" {
-		iface, err := net.InterfaceByName(ifaceName)
-		if err != nil {
-			log.Fatalf("failed to find network interface: %s", ifaceName)
-		}
-
-		addrs, err := iface.Addrs()
-		if err != nil {
-			log.Fatalf("failed to get addresses for interface: %s", ifaceName)
-		}
-
-		var localAddr string
-		for _, addr := range addrs {
-			if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
-				if ipNet.IP.To4() != nil {
-					localAddr = ipNet.IP.String()
-					break
-				}
-			}
-		}
-
-		if localAddr == "" {
-			log.Fatalf("failed to get IPv4 address for interface: %s", ifaceName)
-		}
-
-		// 创建自定义HTTP客户端，绑定到指定网络接口的IP地址
-		localTCPAddr := net.TCPAddr{
-			IP: net.ParseIP(localAddr),
-		}
+		// Create a custom HTTP client, binding it directly to the specified network interface
 		transport := &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				LocalAddr: &localTCPAddr,
-				Timeout:   10 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				d := &net.Dialer{
+					Timeout:   10 * time.Second,
+					KeepAlive: 30 * time.Second,
+					Control: func(network, address string, c syscall.RawConn) error {
+						return c.Control(func(fd uintptr) {
+							// Bind to the specified network interface
+							err := syscall.SetsockoptString(int(fd), syscall.SOL_SOCKET, syscall.SO_BINDTODEVICE, ifaceName)
+							if err != nil {
+								log.Fatalf("failed to bind to network interface: %s", ifaceName)
+							}
+						})
+					},
+				}
+				return d.DialContext(ctx, network, addr)
+			},
 		}
 		client = &http.Client{Transport: transport}
 
 	} else {
-		// 如果未指定接口名称，使用系统默认路由表
+		// If no interface name is specified, use the system's default routing table
 		client = &http.Client{
 			Timeout: 30 * time.Second,
 		}
