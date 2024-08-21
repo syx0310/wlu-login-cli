@@ -46,7 +46,7 @@ release:
     ## 感谢您的支持!
 
     以上就是在 {{ .Tag }} 上的改动!
-  name_template: "{{.ProjectName}}-v{{.Version}} {{.Env.USER}}"
+  name_template: "{{.ProjectName}}-v{{.Version}}-Linux {{.Env.USER}}"
 
 
 nfpms:
