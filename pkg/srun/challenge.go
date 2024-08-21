@@ -2,10 +2,10 @@ package srun
 
 import (
 	"errors"
-	"github.com/hduhelp/api_open_sdk/types"
-	"github.com/parnurzeal/gorequest"
-	"github.com/spf13/viper"
 	"net/url"
+
+	"github.com/hduhelp/api_open_sdk/types"
+	"github.com/spf13/viper"
 )
 
 func (s *PortalServer) GetChallenge() (*challenge, error) {
@@ -21,9 +21,13 @@ func (s *PortalServer) GetChallenge() (*challenge, error) {
 	if viper.GetBool("verbose") {
 		println(reqUrl.String())
 	}
-	_, body, errs := gorequest.New().Get(reqUrl.String()).End()
-	if len(errs) != 0 {
-		return nil, errs[0]
+	// _, body, errs := gorequest.New().Get(reqUrl.String()).End()
+	// if len(errs) != 0 {
+	// 	return nil, errs[0]
+	// }
+	_, body, errs := CustomIfaceGetRequest(reqUrl.String(), s.iface)
+	if errs != nil {
+		return nil, errs
 	}
 	err := response.UnmarshalJSON([]byte(body))
 	if err != nil {

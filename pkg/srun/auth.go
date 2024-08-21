@@ -3,13 +3,14 @@ package srun
 import (
 	"encoding/json"
 	"errors"
+	"net/url"
+	"strconv"
+	"time"
+
 	"github.com/hduhelp/api_open_sdk/types"
 	"github.com/parnurzeal/gorequest"
 	"github.com/spf13/viper"
 	"github.com/syx0310/wlu-login-cli/utils"
-	"net/url"
-	"strconv"
-	"time"
 )
 
 func (s *PortalServer) PortalLogin() (*loginResponse, error) {
@@ -38,10 +39,14 @@ func (s *PortalServer) PortalLogin() (*loginResponse, error) {
 	if viper.GetBool("verbose") {
 		println(reqUrl.String())
 	}
-	_, body, errs := gorequest.New().Get(reqUrl.String()).End()
+	// _, body, errs := gorequest.New().Get(reqUrl.String()).End()
 
-	if len(errs) != 0 {
-		return nil, errs[0]
+	// if len(errs) != 0 {
+	// 	return nil, errs[0]
+	// }
+	_, body, errs := CustomIfaceGetRequest(reqUrl.String(), s.iface)
+	if errs != nil {
+		return nil, errs
 	}
 	err := response.UnmarshalJSON([]byte(body))
 	if err != nil {

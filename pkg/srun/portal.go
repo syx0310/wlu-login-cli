@@ -42,6 +42,21 @@ func (s *PortalServer) SetInternetCheckEndpoint(uri string) error {
 	return nil
 }
 
+// 新增: 设置网络接口的方法
+func (s *PortalServer) SetInterface(ifaceName string) error {
+	if ifaceName == "" {
+		s.iface = "" // 未指定接口，置为空
+		return nil
+	}
+	s.iface = ifaceName
+	return nil
+}
+
+// 新增: 获取网络接口的方法（如果设置了）
+func (s *PortalServer) GetInterface() string {
+	return s.iface
+}
+
 type PortalServer struct {
 	endPoint string
 	// AcID NasID?
@@ -59,6 +74,8 @@ type PortalServer struct {
 	challenge      *challenge
 	loginResponse  *loginResponse
 	logoutResponse *logoutResponse
+
+	iface string
 }
 
 func (s PortalServer) callback() string {

@@ -2,10 +2,11 @@ package srun
 
 import (
 	"errors"
-	"github.com/hduhelp/api_open_sdk/types"
-	"github.com/parnurzeal/gorequest"
-	"github.com/spf13/viper"
+	"log"
 	"net/url"
+
+	"github.com/hduhelp/api_open_sdk/types"
+	"github.com/spf13/viper"
 )
 
 func (s *PortalServer) GetUserInfo() (*userInfo, error) {
@@ -19,9 +20,12 @@ func (s *PortalServer) GetUserInfo() (*userInfo, error) {
 	if viper.GetBool("verbose") {
 		println(reqUrl.String())
 	}
-	_, body, errs := gorequest.New().Get(reqUrl.String()).End()
-	if len(errs) != 0 {
-		return nil, errs[0]
+	// _, body, errs := gorequest.New().Get(reqUrl.String()).End()
+	_, body, errs := CustomIfaceGetRequest(reqUrl.String(), s.iface)
+
+	if errs != nil {
+		log.Fatal(errs)
+		return nil, errs
 	}
 	err := response.UnmarshalJSON([]byte(body))
 	if err != nil {

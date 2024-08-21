@@ -8,3 +8,4 @@ dist/
 
 .wlu-login-cli.yaml
 wlu-login-cli
+.DS_Store

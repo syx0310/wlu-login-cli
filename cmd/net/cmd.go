@@ -46,8 +46,14 @@ func init() {
 	loginCmd.Flags().StringP("password", "p", "", "password of srun")
 	loginCmd.Flags().BoolP("daemon", "d", false, "daemon mode")
 	loginCmd.Flags().IntP("interval", "i", 60, "second interval of daemon mode")
+	loginCmd.Flags().StringP("interface", "f", "", "interface to send request")
 
 	logoutCmd.Flags().StringP("username", "u", "", "username of srun")
+	logoutCmd.Flags().StringP("interface", "f", "", "interface to send request")
+
+	internetCmd.Flags().StringP("interface", "f", "", "interface to send request")
+
+	infoCmd.Flags().StringP("interface", "f", "", "interface to send request")
 
 	Cmd.AddCommand(infoCmd, loginCmd, logoutCmd, internetCmd)
 }
@@ -57,6 +63,8 @@ var infoCmd = &cobra.Command{
 	Use:   "info",
 	Short: "show info of your Westlake University network",
 	Run: func(cmd *cobra.Command, args []string) {
+		cobra.CheckErr(viper.BindPFlag("net.auth.interface", cmd.Flags().Lookup("interface")))
+		portalServer.SetInterface(viper.GetString("net.auth.interface"))
 		info, err := portalServer.GetUserInfo()
 		table.PrintStruct(info, "chinese")
 		cobra.CheckErr(err)
@@ -70,9 +78,14 @@ var loginCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cobra.CheckErr(viper.BindPFlag("net.auth.username", cmd.Flags().Lookup("username")))
 		cobra.CheckErr(viper.BindPFlag("net.auth.password", cmd.Flags().Lookup("password")))
+		cobra.CheckErr(viper.BindPFlag("net.auth.interface", cmd.Flags().Lookup("interface")))
 
 		cobra.CheckErr(portalServer.SetUsername(viper.GetString("net.auth.username")))
 		cobra.CheckErr(portalServer.SetPassword(viper.GetString("net.auth.password")))
+
+		// set interface
+		portalServer.SetInterface(viper.GetString("net.auth.interface"))
+
 		info, err := portalServer.GetUserInfo()
 		if viper.GetBool("verbose") {
 			table.PrintStruct(info, "chinese")
@@ -127,6 +140,8 @@ var logoutCmd = &cobra.Command{
 	Use:   "logout",
 	Short: "logout the account",
 	Run: func(cmd *cobra.Command, args []string) {
+		cobra.CheckErr(viper.BindPFlag("net.auth.interface", cmd.Flags().Lookup("interface")))
+		portalServer.SetInterface(viper.GetString("net.auth.interface"))
 		info, err := portalServer.GetUserInfo()
 		cobra.CheckErr(err)
 		if ok, _ := info.IsOK(); !ok {
@@ -149,6 +164,8 @@ var internetCmd = &cobra.Command{
 	Use:   "internet",
 	Short: "check if connect to the internet",
 	Run: func(cmd *cobra.Command, args []string) {
+		cobra.CheckErr(viper.BindPFlag("net.auth.interface", cmd.Flags().Lookup("interface")))
+		portalServer.SetInterface(viper.GetString("net.auth.interface"))
 		fmt.Println(portalServer.Internet())
 	},
 }
