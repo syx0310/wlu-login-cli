@@ -40,7 +40,7 @@ release:
   header: |
     ## Hi! 欢迎使用wlu-login-cli ({{ .Date }})
 
-    first release
+    Only Linux version support bind interface, other platform will bind the ip of the interface.
 
   footer: |
     ## 感谢您的支持!
